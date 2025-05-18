@@ -17,7 +17,7 @@ function MOD:Save(entity)
 		return nil
 	end
 
-	local data = self:GetNetworkVars()
+	local data = entity:GetNetworkVars()
 
 	return data
 end
