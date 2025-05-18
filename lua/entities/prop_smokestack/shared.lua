@@ -46,45 +46,41 @@ function ENT:SetupDataTables()
 
 	self:NetworkVar(
 		"Bool",
-		0,
 		"InitialState",
 		{ KeyName = "InitialState", Edit = { type = "Bool", order = count(), title = "Enabled" } }
 	)
-	self:NetworkVar("Int", 0, "SpreadSpeed", {
+	self:NetworkVar("Int", "SpreadSpeed", {
 		KeyName = "SpreadSpeed",
 		Edit = { type = "Int", order = count(), title = "Spread Speed", min = 0, max = BIG },
 	})
 	self:NetworkVar(
 		"Int",
-		1,
 		"Speed",
 		{ KeyName = "Speed", Edit = { type = "Int", order = count(), title = "Speed", min = 0, max = BIG } }
 	)
-	self:NetworkVar("Int", 2, "StartSize", {
+	self:NetworkVar("Int", "StartSize", {
 		KeyName = "StartSize",
 		Edit = { type = "Int", order = count(), title = "Particle start size", min = 0, max = BIG },
 	})
-	self:NetworkVar("Int", 3, "EndSize", {
+	self:NetworkVar("Int", "EndSize", {
 		KeyName = "EndSize",
 		Edit = { type = "Int", order = count(), title = "Particle end size", min = 0, max = BIG },
 	})
 	self:NetworkVar(
 		"Int",
-		4,
 		"Rate",
 		{ KeyName = "Rate", Edit = { type = "Int", order = count(), title = "Emission rate", min = 0, max = BIG } }
 	)
-	self:NetworkVar("Int", 5, "JetLength", {
+	self:NetworkVar("Int", "JetLength", {
 		KeyName = "JetLength",
 		Edit = { type = "Int", order = count(), title = "Length of smoke trail", min = 0, max = BIG },
 	})
-	self:NetworkVar("Float", 0, "WindAngle", {
+	self:NetworkVar("Float", "WindAngle", {
 		KeyName = "WindAngle",
 		Edit = { type = "Float", order = count(), title = "Wind X/Y Angle", min = -180, max = 180 },
 	})
 	self:NetworkVar(
 		"Int",
-		6,
 		"WindSpeed",
 		{ KeyName = "WindSpeed", Edit = { type = "Int", order = count(), title = "Wind Speed", min = 0, max = BIG } }
 	)
@@ -94,29 +90,29 @@ function ENT:SetupDataTables()
 	})
 	self:NetworkVar(
 		"Int",
-		7,
 		"Twist",
 		{ KeyName = "Twist", Edit = { type = "Int", order = count(), title = "Twist", min = 0, max = BIG } }
 	)
 	self:NetworkVar(
 		"Float",
-		1,
 		"Roll",
 		{ KeyName = "Roll", Edit = { type = "Float", order = count(), title = "Roll Speed", min = 0, max = BIG } }
 	)
 	self:NetworkVar(
 		"Vector",
-		0,
 		"rendercolor",
 		{ KeyName = "rendercolor", Edit = { type = "VectorColor", order = count(), title = "Base Color (R G B)" } }
 	)
 	self:NetworkVar(
 		"Int",
-		8,
 		"renderamt",
 		{ KeyName = "renderamt", Edit = { type = "Int", order = count(), title = "Translucency", min = 0, max = 255 } }
 	)
-	self:NetworkVar("Vector", 1, "Wind", { KeyName = "Wind", Edit = { order = count(), title = "Wind Vector" } })
+	self:NetworkVar(
+		"Vector",
+		"Wind",
+		{ KeyName = "Wind", Edit = { type = "Generic", order = count(), title = "Wind Vector" } }
+	)
 
 	if SERVER then
 		local function changedCallback(entity, key)
