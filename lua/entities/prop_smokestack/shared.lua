@@ -1,5 +1,7 @@
 ---@class prop_smokestack: ENT
----@field GetInitialState fun(prop_smokestack): boolean
+---@field GetInitialState fun(self: prop_smokestack): boolean
+---@field SetWindSpeed fun(self: prop_smokestack, newSpeed: number)
+---@field GetWindSpeed fun(self: prop_smokestack): windSpeed: number
 local ENT = ENT
 
 ENT.Type = "anim"
@@ -44,6 +46,10 @@ function ENT:SetSmoke()
 	for key, value in pairs(self:GetNetworkVars()) do
 		self:SetSmokeKey(key, value)
 	end
+	-- HACK: For now, changed check below is not compatible with just
+	-- setting windspeed for dupes, so we have to force this.
+	self:SetWindSpeed(self:GetWindSpeed() + 1)
+	self:SetWindSpeed(self:GetWindSpeed() - 1)
 end
 
 ---Setup network vars for `env_smokestack`
@@ -124,9 +130,11 @@ function ENT:SetupDataTables()
 	---@diagnostic enable
 
 	if SERVER then
-		local function changedCallback(_, key, _, newValue)
+		local function changedCallback(_, key, oldValue, newValue)
 			if IsValid(self.smokestack) then
-				self:SetSmokeKey(key, newValue)
+				if newValue ~= oldValue then
+					self:SetSmokeKey(key, newValue)
+				end
 			end
 		end
 
@@ -154,7 +162,6 @@ function ENT:Think()
 			self.smokestack:SetParent(self)
 			self.smokestack:SetPos(self:GetPos())
 			self:SetSmoke()
-			self:SetWindSpeed(self:GetWindSpeed())
 			self.smokestack:Spawn()
 			self.smokestack:Activate()
 		elseif IsValid(self.smokestack) and not self:GetInitialState() then
@@ -167,7 +174,6 @@ function ENT:Think()
 			if self.firstCheck then
 				-- During dupes or saves, smokestack isn't the available. Set parameters when it does
 				self:SetSmoke()
-				self:SetWindSpeed(self:GetWindSpeed())
 				self.firstCheck = false
 			end
 		end
