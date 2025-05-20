@@ -10,5 +10,5 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 
-	self.changed = true
+	self.firstCheck = true
 end

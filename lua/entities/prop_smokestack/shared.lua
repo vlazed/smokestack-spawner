@@ -27,16 +27,22 @@ end
 
 local BIG = 2 ^ 32
 
+---@param key string
+---@param value any
+function ENT:SetSmokeKey(key, value)
+	if key == "rendercolor" then
+		value = value * 255
+	end
+	if key == "InitialState" then
+		value = value and 1 or 0
+	end
+	self.smokestack:SetKeyValue(key, tostring(value))
+end
+
 ---Set `env_smokestack` key values from network vars
 function ENT:SetSmoke()
 	for key, value in pairs(self:GetNetworkVars()) do
-		if key == "rendercolor" then
-			value = value * 255
-		end
-		if key == "InitialState" then
-			value = value and 1 or 0
-		end
-		self.smokestack:SetKeyValue(key, tostring(value))
+		self:SetSmokeKey(key, value)
 	end
 end
 
@@ -44,6 +50,8 @@ end
 function ENT:SetupDataTables()
 	local count = counter(-1)
 
+	---INFO: stop complaining linter
+	---@diagnostic disable: param-type-mismatch
 	self:NetworkVar(
 		"Bool",
 		"InitialState",
@@ -113,10 +121,13 @@ function ENT:SetupDataTables()
 		"Wind",
 		{ KeyName = "Wind", Edit = { type = "Generic", order = count(), title = "Wind Vector" } }
 	)
+	---@diagnostic enable
 
 	if SERVER then
-		local function changedCallback(entity, key)
-			self.changed = true
+		local function changedCallback(_, key, _, newValue)
+			if IsValid(self.smokestack) then
+				self:SetSmokeKey(key, newValue)
+			end
 		end
 
 		self:NetworkVarNotify("EndSize", changedCallback)
@@ -143,6 +154,7 @@ function ENT:Think()
 			self.smokestack:SetParent(self)
 			self.smokestack:SetPos(self:GetPos())
 			self:SetSmoke()
+			self:SetWindSpeed(self:GetWindSpeed())
 			self.smokestack:Spawn()
 			self.smokestack:Activate()
 		elseif IsValid(self.smokestack) and not self:GetInitialState() then
@@ -152,10 +164,11 @@ function ENT:Think()
 		if IsValid(self.smokestack) then
 			self.smokestack:SetPos(self:GetPos())
 			self.smokestack:SetAngles(self:GetAngles())
-
-			if self.changed then
+			if self.firstCheck then
+				-- During dupes or saves, smokestack isn't the available. Set parameters when it does
 				self:SetSmoke()
-				self.changed = false
+				self:SetWindSpeed(self:GetWindSpeed())
+				self.firstCheck = false
 			end
 		end
 	end
