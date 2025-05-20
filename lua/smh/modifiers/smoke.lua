@@ -39,34 +39,10 @@ function MOD:LoadBetween(entity, data1, data2, percentage)
 	for key, value in pairs(data1) do
 		if IsColor(value) then
 			entity["Set" .. key](entity, SMH.LerpLinearVector(value, data2[key], percentage))
-		elseif isstring(value) then
+		elseif isstring(value) or isbool(value) then
 			entity["Set" .. key](entity, value)
 		else
 			entity["Set" .. key](entity, SMH.LerpLinear(value, data2[key], percentage))
 		end
-	end
-
-	entity:SetBrightness(SMH.LerpLinear(data1.Brightness, data2.Brightness, percentage))
-	entity:SetLightColor(SMH.LerpLinearVector(data1.Color, data2.Color, percentage))
-
-	if self:IsProjectedLight(entity) then
-		local theclass = entity:GetClass()
-		if theclass ~= "expensive_light" and theclass ~= "expensive_light_new" then
-			entity:SetLightFOV(SMH.LerpLinear(data1.FOV, data2.FOV, percentage))
-		end
-		if theclass == "projected_light_new" then
-			entity:SetOrthoBottom(SMH.LerpLinear(data1.OrthoBottom, data2.OrthoBottom, percentage))
-			entity:SetOrthoLeft(SMH.LerpLinear(data1.OrthoLeft, data2.OrthoLeft, percentage))
-			entity:SetOrthoRight(SMH.LerpLinear(data1.OrthoRight, data2.OrthoRight, percentage))
-			entity:SetOrthoTop(SMH.LerpLinear(data1.OrthoTop, data2.OrthoTop, percentage))
-		end
-		entity:SetNearZ(SMH.LerpLinear(data1.Nearz, data2.Nearz, percentage))
-		entity:SetFarZ(SMH.LerpLinear(data1.Farz, data2.Farz, percentage))
-	elseif entity:GetClass() == "cheap_light" then
-		entity:SetLightSize(SMH.LerpLinear(data1.LightSize, data2.LightSize, percentage))
-	else
-		entity:SetInnerFOV(SMH.LerpLinear(data1.InFOV, data2.InFOV, percentage))
-		entity:SetOuterFOV(SMH.LerpLinear(data1.OutFOV, data2.OutFOV, percentage))
-		entity:SetRadius(SMH.LerpLinear(data1.Radius, data2.Radius, percentage))
 	end
 end
